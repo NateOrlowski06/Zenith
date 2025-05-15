@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "pico/stdio.h"
 #include "pico/stdlib.h"
@@ -206,8 +207,8 @@ bool bmp_read_pressure(bmp_t* bmp) {
     X1 = (X1 * 3038) >> 16;
     X2 = (-7357 * p) >> 16;
 
-    bmp->pressure = p + ((X1 + X2 + 3791) >> 4);
-
+    bmp->pressure = (p + ((X1 + X2 + 3791) >> 4));// pA
+    bmp->altitude = 44330*( 1- pow((0.01*bmp->pressure / 1013.25), 0.190295));
     return true;
 }
 
