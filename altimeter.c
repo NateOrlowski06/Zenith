@@ -12,7 +12,8 @@ void initialize_altimeter(struct Altimeter * altimeter){
 
     //initializes I2C connection
     bmp_init(&(altimeter -> bmp180));
-
+    bmp_get_pressure_temperature(&(altimeter -> bmp180));
+    
     //Creates circular linked list for easy traversal during data aquisition and averaging
     //Initializes all altitude with current altitude so zeroes do not affect velocity
     for(int i = 0; i<LINKED_LIST_SIZE-1; i++){
@@ -23,9 +24,9 @@ void initialize_altimeter(struct Altimeter * altimeter){
         //during the first iteration of calculations.
         altimeter -> velocity_calculations[i].value = 0;
         altimeter -> velocity_calculations[i].next_address = &(altimeter -> velocity_calculations[i+1]);
-    }
+    }    
 
-    
+
     //Points tail of list to head, finalizing the circular list
     altimeter -> altitude_readings[LINKED_LIST_SIZE-1].value = altimeter -> bmp180.altitude; //replace with: altitude_readings
     altimeter -> altitude_readings[LINKED_LIST_SIZE-1].next_address = &(altimeter -> altitude_readings[0]);
