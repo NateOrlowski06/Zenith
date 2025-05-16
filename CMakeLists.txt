@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(FlightComputerV2 main.c altimeter.c bmp180.c)
+add_executable(FlightComputerV2 main.c altimeter.c Libs/bmp180.c)
 
 pico_set_program_name(FlightComputerV2 "FlightComputerV2")
 pico_set_program_version(FlightComputerV2 "0.1")
@@ -51,6 +51,7 @@ target_link_libraries(FlightComputerV2
 # Add the standard include files to the build
 target_include_directories(FlightComputerV2 PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
+        ${CMAKE_CURRENT_LIST_DIR}/Libs
 )
 
 # Add any user requested libraries
