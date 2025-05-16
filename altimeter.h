@@ -18,6 +18,8 @@ struct Altimeter{
     struct Node velocity_calculations[LINKED_LIST_SIZE];
     float smooth_altitude;
     float smooth_velocity;
+    struct Node * altitude_pointer;
+    struct Node * velocity_pointer;
 };
 
 
@@ -27,4 +29,4 @@ void update_smooth_altitude(struct Altimeter * altimeter);
 void update_smooth_velocity(struct Altimeter * altimeter);
 
 
-int initialize_altimeter(struct Altimeter * altimeter);
+void initialize_altimeter(struct Altimeter * altimeter);
