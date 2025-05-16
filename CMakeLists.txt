@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(FlightComputerV2 main.c )
+add_executable(FlightComputerV2 main.c altimeter.c bmp180.c)
 
 pico_set_program_name(FlightComputerV2 "FlightComputerV2")
 pico_set_program_version(FlightComputerV2 "0.1")
