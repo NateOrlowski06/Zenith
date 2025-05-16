@@ -1,17 +1,21 @@
 
 #include "Libs/bmp180.h"
 
-#define RING_BUFFER_SIZE 10
+#define LINKED_LIST_SIZE 10
 
 #define I2C_PORT i2c0
 #define I2C_SDA 0
 #define I2C_SCL 1
 
+struct Node{
+    float value;
+    struct Node * next_address;
+};
 
 struct Altimeter{
     bmp_t bmp180;
-    float altitude_readings[RING_BUFFER_SIZE];
-    float velocity_calculations[RING_BUFFER_SIZE];
+    struct Node altitude_readings[LINKED_LIST_SIZE];
+    struct Node velocity_calculations[LINKED_LIST_SIZE];
     float smooth_altitude;
     float smooth_velocity;
 };
