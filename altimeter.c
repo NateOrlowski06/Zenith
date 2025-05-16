@@ -13,7 +13,7 @@ void initialize_altimeter(struct Altimeter * altimeter){
     //initializes I2C connection
     bmp_init(&(altimeter -> bmp180));
     bmp_get_pressure_temperature(&(altimeter -> bmp180));
-    
+
     //Creates circular linked list for easy traversal during data aquisition and averaging
     //Initializes all altitude with current altitude so zeroes do not affect velocity
     for(int i = 0; i<LINKED_LIST_SIZE-1; i++){
@@ -24,6 +24,8 @@ void initialize_altimeter(struct Altimeter * altimeter){
         //during the first iteration of calculations.
         altimeter -> velocity_calculations[i].value = 0;
         altimeter -> velocity_calculations[i].next_address = &(altimeter -> velocity_calculations[i+1]);
+
+        altimeter -> altitude_readings[i].time = get_absolute_time();
     }    
 
 
@@ -58,7 +60,7 @@ void update_smooth_altitude(struct Altimeter * altimeter){
 
     //Initializes sum variable and temporary pointer for traversing the loop
     float sum = 0;
-    struct Node * loop_pointer = altimeter -> altitude_pointer;
+    struct Altitude_Node * loop_pointer = altimeter -> altitude_pointer;
 
     //1: Add current node to sum
     //2: Increment to next node
@@ -93,7 +95,7 @@ void update_smooth_velocity(struct Altimeter * altimeter){
     altimeter -> velocity_pointer -> value = height_difference / (LINKED_LIST_SIZE * dt);
 
     float sum = 0;
-    struct Node * loop_pointer = altimeter -> velocity_pointer;
+    struct Velocity_Node * loop_pointer = altimeter -> velocity_pointer;
     
     do{
         sum += loop_pointer -> value;
