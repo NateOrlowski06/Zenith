@@ -21,7 +21,7 @@ small dH correlates to larger variance, vice versa
 
 struct Altitude_Node{
     float value;
-    uint32_t time; 
+    absolute_time_t time; 
     struct Altitude_Node * next_address;
 };
 

@@ -57,6 +57,7 @@ This list is averaged to keep track of a 'smooth' altitude reading for state tra
 void update_smooth_altitude(struct Altimeter * altimeter){
     //"Value in the current node to equal the value the sensor just recorded"
     altimeter -> altitude_pointer -> value = altimeter -> bmp180.altitude;
+    altimeter -> altitude_pointer -> time = get_absolute_time();
 
     //Initializes sum variable and temporary pointer for traversing the loop
     float sum = 0;
@@ -87,7 +88,7 @@ void update_smooth_altitude(struct Altimeter * altimeter){
 void update_smooth_velocity(struct Altimeter * altimeter){
 
     // ToDo: figure out how to get accurate DT from oldest to newest value
-    float dt = LINKED_LIST_SIZE * 0.01;
+    double dt = absolute_time_diff_us(altimeter -> lagging_pointer -> time, altimeter -> altitude_pointer -> time)*0.000001;
     float height_difference =  (altimeter -> lagging_pointer -> value) - (altimeter -> altitude_pointer -> value);
     
     //Lagging pointer catches back up to altitude pointer, but will lag behind in update_smooth_altitude
