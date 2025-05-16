@@ -32,6 +32,7 @@ struct Altimeter{
     float smooth_velocity;
     struct Node * altitude_pointer;
     struct Node * velocity_pointer;
+    struct Node * lagging_pointer;
 };
 
 

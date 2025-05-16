@@ -35,12 +35,14 @@ void initialize_altimeter(struct Altimeter * altimeter){
 
     altimeter -> altitude_pointer = &(altimeter-> altitude_readings[0]);
     altimeter -> velocity_pointer = &(altimeter-> velocity_calculations[0]);
+    altimeter -> lagging_pointer  = &(altimeter-> altitude_readings[0]);
 
 }
 
 
 void update_altimeter(struct Altimeter * altimeter){
     bmp_get_pressure_temperature(&(altimeter -> bmp180));
+    //Order matters, altitude must be calculated before velocity for lagging pointer logic
     update_smooth_altitude(altimeter);
     update_smooth_velocity(altimeter);
 }
@@ -70,6 +72,35 @@ void update_smooth_altitude(struct Altimeter * altimeter){
     altimeter -> smooth_altitude = sum/LINKED_LIST_SIZE;
 }
 
+/*
+    Average velocity is calculated over the length of the altitude
+    readings list. After that, it is then put into its own linked list of previous 
+    velocitiy readings, those are averaged to produce a smooth velocity reading.
+    The lagging pointer hangs back to the newest value that the altimeter just recorded.
+    At the end of update_smooth_altitude, the altitude pointer moves on to the oldest value
+    in the list, waiting to update it in the next iteration. By lagging the lagging pointer behind,
+    we now have easy access to the newest and oldest value for height calculations.
+*/
 void update_smooth_velocity(struct Altimeter * altimeter){
-    altimeter -> smooth_velocity = 0.0;
+
+    // ToDo: figure out how to get accurate DT from oldest to newest value
+    float dt = LINKED_LIST_SIZE * 0.01;
+    float height_difference =  (altimeter -> lagging_pointer -> value) - (altimeter -> altitude_pointer -> value);
+    
+    //Lagging pointer catches back up to altitude pointer, but will lag behind in update_smooth_altitude
+    altimeter -> lagging_pointer = altimeter -> altitude_pointer;
+    altimeter -> velocity_pointer -> value = height_difference / (LINKED_LIST_SIZE * dt);
+
+    float sum = 0;
+    struct Node * loop_pointer = altimeter -> velocity_pointer;
+    
+    do{
+        sum += loop_pointer -> value;
+        loop_pointer = loop_pointer -> next_address;
+    } while(loop_pointer != altimeter -> velocity_pointer);
+
+    altimeter -> velocity_pointer = altimeter -> velocity_pointer -> next_address;
+    altimeter -> smooth_velocity = sum/LINKED_LIST_SIZE;
 }
+
+
