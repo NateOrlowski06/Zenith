@@ -37,10 +37,10 @@ typedef struct {
 } bmp_calib_param_t;
 
 typedef struct {
-    int addr;
+    uint8_t addr;
     int rate;
-    int scl;
-    int sda;
+    uint8_t scl;
+    uint8_t sda;
     i2c_inst_t* inst;
 } i2c_t;
 

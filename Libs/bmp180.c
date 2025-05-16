@@ -8,14 +8,14 @@ bool bmp_check_chip_id(bmp_t* bmp) {
 
     i2c_write_blocking(bmp->i2c.inst, bmp->i2c.addr, &chip_id_reg, 1, true);
     i2c_read_blocking(bmp->i2c.inst, bmp->i2c.addr, chip_id_val, 1, false);
-
-    if (chip_id_val[0] != BMP_CHIP_ID_VAL) {
 #ifdef DEBUG
+    if (chip_id_val[0] != BMP_CHIP_ID_VAL) {
         printf("Returned Chip ID: 0x%02x\n", chip_id_val[0]);
         printf("Check your I2C configuration and connection.\n");
-#endif
         return false;
     }
+#endif
+
 
     return true;
 }
@@ -30,13 +30,14 @@ bool bmp_get_calib_coeffs(bmp_t* bmp) {
     int16_t* data = (int16_t*)&bmp->calib;
     for (int i = 0, j = 1; i < BMP_CALIB_COEFF_LEN / 2; i++, j += 2) {
         data[i] = (calib_coeffs_val[i * 2] << 8) | calib_coeffs_val[j];
-
-        if ((data[i] == 0) | (data[i] == -1)) {
 #ifdef DEBUG
+        if ((data[i] == 0) | (data[i] == -1)) {
+
             printf("Calibation data invalid.\n");
-#endif
+
             return false;
         }
+#endif
     }
 
 #ifdef DEBUG
@@ -131,22 +132,20 @@ bool bmp_read_pressure(bmp_t* bmp) {
     int32_t X1, X2, X3, B3, B6, p = 0;
     uint32_t B4, B7 = 0;
 
+    uint32_t B6_sq = B6*B6 >>12;
+
     B6 = bmp->B5 - 4000;
-    X1 = (bmp->calib.B2 * ((B6 * B6) >> 12)) >> 11;
+    X1 = (bmp->calib.B2 * (B6_sq)) >> 11;
     X2 = (bmp->calib.AC2 * B6) >> 11;
     X3 = X1 + X2;
     B3 = (((bmp->calib.AC1 * 4 + X3) << bmp->oss) + 2) / 4;
     X1 = (bmp->calib.AC3 * B6) >> 13;
-    X2 = (bmp->calib.B1 * ((B6 * B6) >> 12)) >> 16;
+    X2 = (bmp->calib.B1 * (B6_sq)) >> 16;
     X3 = ((X1 + X2) + 2) >> 2;
     B4 = (bmp->calib.AC4 * (uint32_t)(X3 + 32768)) >> 15;
     B7 = ((uint32_t)(UP) - B3) * (50000 >> bmp->oss);
 
-    if (B7 < 0x80000000) {
-        p = (B7 * 2) / B4;
-    } else {
-        p = (B7 / B4) * 2;
-    }
+    p = ((B7 *2 ) / B4) * (B7 < 0x80000000) + ((B7 / B4) * 2) * (B7 >= 0x80000000);
 
     X1 = (p >> 8) * (p >> 8);
     X1 = (X1 * 3038) >> 16;
