@@ -5,15 +5,12 @@
 #include "altimeter.h"
 
 
-#define LED_PIN 16
 
 int main()
 {
     //usb configuration for serial data
     stdio_init_all();
 
-    gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN,1);
 
     //Waits for user input to start program, for development and testing only
     while(getchar() != 'X'){
@@ -22,13 +19,23 @@ int main()
 
     struct Altimeter altimeter;
     initialize_altimeter(&altimeter);
-  
-    gpio_put(LED_PIN,1);
-   
+
+    absolute_time_t start;
+    absolute_time_t end;
+
+    int trigger = 0;
     while(1){
+        start = get_absolute_time();
         update_altimeter(&altimeter);
-        printf("%f\n",altimeter.smooth_altitude);
+        end = get_absolute_time();
+        printf("Altitude: %f    Velocity: %f     Trigger: %d    Execution time: %lld\n",altimeter.smooth_altitude,altimeter.smooth_velocity,trigger,absolute_time_diff_us(start,end));
+        
+        if(altimeter.smooth_velocity > 3){
+            trigger = 1;
+        }
     }
+
+
 
     return 0;
 }
