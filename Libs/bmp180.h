@@ -18,7 +18,7 @@
 #define BMP_CHIP_ID_VAL         0x55
 #define BMP_MIN_TEMP_THRESHOLD	-40
 #define BMP_MAX_TEMP_THRESHOLD	+85
-#define BMP_TEMP_DELAY          5
+#define BMP_TEMP_DELAY          4500
 
 #define ASSERT_OK(X) { if (X == false) return false; };
 
@@ -54,13 +54,13 @@ typedef struct {
     int32_t B5;
 } bmp_t;
 
-extern const uint32_t oss_delay[];
+extern const uint16_t oss_delay[];
 
 bool bmp_check_chip_id(bmp_t* bmp);
 bool bmp_get_calib_coeffs(bmp_t* bmp);
-uint32_t bmp_start_temperature(bmp_t* bmp);
+uint16_t bmp_start_temperature(bmp_t* bmp);
 bool bmp_read_temperature(bmp_t* bmp);
-uint32_t bmp_start_pressure(bmp_t* bmp);
+uint16_t bmp_start_pressure(bmp_t* bmp);
 bool bmp_read_pressure(bmp_t* bmp);
 bool bmp_get_temperature(bmp_t* bmp);
 bool bmp_get_pressure(bmp_t* bmp);

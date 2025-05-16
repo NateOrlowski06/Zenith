@@ -1,6 +1,6 @@
 #include "Libs/bmp180.h"
 
-const uint32_t oss_delay[] = {5, 8, 14, 26};
+const uint16_t oss_delay[] = {4500, 7500, 13500, 25500};
 
 bool bmp_check_chip_id(bmp_t* bmp) {
     uint8_t chip_id_reg = BMP_CHIP_ID_REG;
@@ -58,7 +58,7 @@ bool bmp_get_calib_coeffs(bmp_t* bmp) {
     return true;
 }
 
-uint32_t bmp_start_temperature(bmp_t* bmp) {
+uint16_t bmp_start_temperature(bmp_t* bmp) {
     uint8_t temp_reg[] = {
         BMP_REG_CONTROL,
         BMP_COM_TEMP
@@ -105,7 +105,7 @@ bool bmp_read_temperature(bmp_t* bmp) {
     return true;
 }
 
-uint32_t bmp_start_pressure(bmp_t* bmp) {
+uint16_t bmp_start_pressure(bmp_t* bmp) {
     uint8_t pres_reg[] = {
         BMP_REG_CONTROL,
         BMP_COM_PRES + (bmp->oss << 6)
@@ -158,14 +158,14 @@ bool bmp_read_pressure(bmp_t* bmp) {
 }
 
 bool bmp_get_temperature(bmp_t* bmp) {
-    sleep_ms(bmp_start_temperature(bmp));
+    sleep_us(bmp_start_temperature(bmp));
     return bmp_read_temperature(bmp);
 }
 
 // User must call bmp_get_temperature() before calling this method.
 // Or use the combo bmp_get_pressure_temperature().
 bool bmp_get_pressure(bmp_t* bmp) {
-    sleep_ms(bmp_start_pressure(bmp));
+    sleep_us(bmp_start_pressure(bmp));
     return bmp_read_pressure(bmp);
 }
 

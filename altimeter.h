@@ -7,7 +7,7 @@ Therefore, the moving average variance is plus or minus RMS/list_size
 V = RMS/list_size = 0.1 m
 
 dH is the height change during time interval for a full refresh of values
-At OSS 0, sensor takes 5 ms per reading
+At OSS 0, sensor takes 5 ms per pressure and 5ms per temp, so 10 total
 dH = OSS_Delay * speed(m/s) * list_size
 
 small dH correlates to larger variance, vice versa
