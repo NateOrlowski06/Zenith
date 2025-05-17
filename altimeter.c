@@ -97,7 +97,7 @@ void update_smooth_velocity(struct Altimeter * altimeter){
 
     // ToDo: figure out how to get accurate DT from oldest to newest value
     double dt = absolute_time_diff_us(altimeter -> lagging_pointer -> time, altimeter -> altitude_pointer -> time)*0.000001;
-    float height_difference =  (altimeter -> lagging_pointer -> value) - (altimeter -> altitude_pointer -> value);
+    float height_difference =  (altimeter -> altitude_pointer -> value) - (altimeter -> lagging_pointer -> value);
     
     //Lagging pointer catches back up to altitude pointer, but will lag behind in update_smooth_altitude
     altimeter -> lagging_pointer = altimeter -> altitude_pointer;
