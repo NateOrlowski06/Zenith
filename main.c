@@ -25,11 +25,17 @@ int main()
     uint8_t * const state_pointer = &state;
 
     while(1){
-        start = get_absolute_time();
-        update_altimeter(&altimeter);
+        #ifdef SERIAL
+            start = get_absolute_time();
+        #endif
 
-        handle_state(state_pointer,&altimeter);        
-        end = get_absolute_time();
+
+        update_altimeter(&altimeter);
+        handle_state(state_pointer,&altimeter);
+        
+        #ifdef SERIAL
+            end = get_absolute_time();
+        #endif
         
         #ifdef SERIAL
         printf("Altitude: %f    Height: %f   Velocity: %f     State: %d    Execution time: %lld   %f %f\n",altimeter.smooth_altitude,
