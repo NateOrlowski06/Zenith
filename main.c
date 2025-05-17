@@ -13,9 +13,11 @@ int main()
 
 
     //Waits for user input to start program, for development and testing only
+    /*
     while(getchar() != 'X'){
         sleep_ms(10);
     }
+    */
 
     struct Altimeter altimeter;
     initialize_altimeter(&altimeter);
@@ -28,11 +30,16 @@ int main()
         start = get_absolute_time();
         update_altimeter(&altimeter);
         end = get_absolute_time();
-        printf("Altitude: %f    Velocity: %f     Trigger: %d    Execution time: %lld\n",altimeter.smooth_altitude,altimeter.smooth_velocity,trigger,absolute_time_diff_us(start,end));
+        printf("Altitude: %f    Height: %f   Velocity: %f     Trigger: %d    Execution time: %lld   %f %f\n",altimeter.smooth_altitude,
+                                                                                                     altimeter.height,
+                                                                                                     altimeter.smooth_velocity,
+                                                                                                     trigger,
+                                                                                                     absolute_time_diff_us(start,end),
+                                                                                                     altimeter.max_height,
+                                                                                                     altimeter.max_velocity);
         
-        if(altimeter.smooth_velocity > 3){
-            trigger = 1;
-        }
+        
+        trigger |= altimeter.smooth_velocity>5 && altimeter.height >5;
     }
 
 
