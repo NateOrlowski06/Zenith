@@ -81,7 +81,7 @@ void update_smooth_altitude(struct Altimeter * altimeter){
     altimeter -> smooth_altitude = sum/LINKED_LIST_SIZE;
     altimeter -> height = altimeter -> smooth_altitude - altimeter -> initial_altitude;
     altimeter -> max_height = (altimeter -> height)    *(altimeter -> height > altimeter -> max_height) +
-                              (altimeter -> max_height)*(altimeter -> height < altimeter -> max_height);
+                              (altimeter -> max_height)*(altimeter -> height <= altimeter -> max_height);
 }
 
 /*
@@ -114,7 +114,7 @@ void update_smooth_velocity(struct Altimeter * altimeter){
     altimeter -> velocity_pointer = altimeter -> velocity_pointer -> next_address;
     altimeter -> smooth_velocity = sum/LINKED_LIST_SIZE;
     altimeter -> max_velocity = (altimeter -> smooth_velocity) * (altimeter -> smooth_velocity > altimeter -> max_velocity) + 
-                                (altimeter -> max_velocity)    * (altimeter -> smooth_velocity < altimeter -> max_velocity);
+                                (altimeter -> max_velocity)    * (altimeter -> smooth_velocity <= altimeter -> max_velocity);
 }
 
 
