@@ -1,3 +1,6 @@
+#ifndef STATE_HANDLER_H
+#define STATE_HANDLER_H
+
 #include <stdint.h>
 #include "altimeter.h"
 #define STANDBY 1
@@ -13,21 +16,16 @@
 #define LANDED_VELOCITY_THRESHOLD 5
 #define LANDED_HEIGHT_THRESHOLD 5
 
-inline void next_state(uint8_t *state){ *state << 1;}
 
-void handle_standby(const uint8_t *state, struct Altimeter* altimeter);
-void handle_boost(const uint8_t *state, struct Altimeter* altimeter);
-void handle_coast(const uint8_t *state, struct Altimeter* altimeter);
-void handle_freefall(const uint8_t *state, struct Altimeter* altimeter);
-void handle_landed(const uint8_t *state, struct Altimeter* altimeter);
+void handle_state(uint8_t *state, struct Altimeter* altimeter);
 
-void (*state_handlers[5])(const uint8_t *state, struct Altimeter* altimeter) = {handle_standby,
-                                                                       handle_boost,
-                                                                       handle_coast,
-                                                                       handle_freefall,
-                                                                       handle_landed};
+void handle_standby(uint8_t *state, struct Altimeter* altimeter);
+void handle_boost(uint8_t *state, struct Altimeter* altimeter);
+void handle_coast(uint8_t *state, struct Altimeter* altimeter);
+void handle_freefall(uint8_t *state, struct Altimeter* altimeter);
+void handle_landed(uint8_t *state, struct Altimeter* altimeter);
 
-
+#endif
 
 
 

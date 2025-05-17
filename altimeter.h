@@ -1,3 +1,5 @@
+#ifndef ALTIMETER_H
+#define ALTIMETER_H
 
 #include "Libs/bmp180.h"
 
@@ -53,3 +55,5 @@ void update_smooth_velocity(struct Altimeter * altimeter);
 
 
 void initialize_altimeter(struct Altimeter * altimeter);
+
+#endif
