@@ -8,6 +8,9 @@
 #define FREEFALL 8
 #define LANDED 16
 
+#define ARM 1
+#define DISARM 0
+
 //State change logic constants
 #define TAKEOFF_HEIGHT_THRESHOLD 10.0
 #define TAKEOFF_VELO_THRESHOLD 5.0
@@ -24,5 +27,16 @@
 #define I2C_PORT i2c0
 #define I2C_SDA 0
 #define I2C_SCL 1
+
+#define DROGUE_CHARGE_PIN 16
+#define MAIN_CHARGE_PIN 17
+#define PULSE_DURATION 2
+
+#define SAFE_ARMING_HEIGHT 50.0
+
+#define MAIN_DEPLOYMENT_HEIGHT 200.0
+
+#define US_TO_SEC 100000
+
 
 #endif

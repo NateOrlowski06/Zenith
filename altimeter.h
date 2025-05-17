@@ -41,6 +41,7 @@ struct Altimeter{
     float max_height;
     float height;
     float initial_altitude;
+    uint8_t is_armed;
 };
 
 

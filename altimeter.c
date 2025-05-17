@@ -44,6 +44,13 @@ void initialize_altimeter(struct Altimeter * altimeter){
     altimeter -> height = 0;
     altimeter -> max_height = 0;
     altimeter -> max_velocity = 0;
+
+    gpio_init(DROGUE_CHARGE_PIN);
+    gpio_init(MAIN_CHARGE_PIN);
+    gpio_set_dir(MAIN_CHARGE_PIN, 1);
+    gpio_set_dir(DROGUE_CHARGE_PIN, 1);
+
+    altimeter -> is_armed = 0;
 }
 
 
