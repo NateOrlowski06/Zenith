@@ -8,7 +8,7 @@ void (*state_handlers[5])(uint8_t *state, struct Altimeter* altimeter) = {handle
 
 
 inline void handle_state(uint8_t *state, struct Altimeter* altimeter){
-    
+
     state_handlers[__builtin_ctz(*state)](state, altimeter);
 }
 
@@ -16,26 +16,25 @@ void handle_standby(uint8_t *state, struct Altimeter* altimeter){
     //Create data buffer so we can log 5 seconds before flight starts
 
     //Shifts the bit to the left by either 1 or zero each time
-    *state << (altimeter -> smooth_altitude > TAKEOFF_HEIGHT_THRESHOLD && 
+    *state = *state << (altimeter -> height > TAKEOFF_HEIGHT_THRESHOLD && 
                altimeter -> smooth_velocity > TAKEOFF_VELO_THRESHOLD);
 }
 
 void handle_boost(uint8_t *state, struct Altimeter* altimeter){
     //Log data
 
-    *state << (altimeter -> max_velocity > altimeter -> smooth_velocity * MOTOR_BURNOUT_PERCENT);
+    *state = *state << ((altimeter -> max_velocity * MOTOR_BURNOUT_PERCENT) > (altimeter -> smooth_velocity));
 }
 
 void handle_coast(uint8_t *state, struct Altimeter* altimeter){
     //log data, perhaps altitude predictor algorithm, pretend to deploy ejection charges upon next state
-
-    *state << (altimeter -> max_height > altimeter -> height) && (altimeter -> smooth_velocity < FREEFALL_VELOCITY_THRESHOLD);
+    *state = *state << ((altimeter -> max_height > altimeter -> height) && (altimeter -> smooth_velocity < FREEFALL_VELOCITY_THRESHOLD));
 }
 
 void handle_freefall(uint8_t *state, struct Altimeter* altimeter){
     //Log data
 
-    *state << (altimeter -> height < LANDED_HEIGHT_THRESHOLD) || ((altimeter -> smooth_velocity) < LANDED_VELOCITY_THRESHOLD);
+    *state = *state << ((altimeter -> height < LANDED_HEIGHT_THRESHOLD) || ((altimeter -> smooth_velocity) < LANDED_VELOCITY_THRESHOLD));
 }
 
 void handle_landed(uint8_t *state, struct Altimeter* altimeter){
