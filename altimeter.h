@@ -39,6 +39,10 @@ struct Altimeter{
     struct Altitude_Node * altitude_pointer;
     struct Velocity_Node * velocity_pointer;
     struct Altitude_Node * lagging_pointer;
+    float max_velocity;
+    float max_height;
+    float height;
+    float initial_altitude;
 };
 
 

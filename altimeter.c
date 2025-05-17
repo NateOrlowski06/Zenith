@@ -40,6 +40,10 @@ void initialize_altimeter(struct Altimeter * altimeter){
     altimeter -> velocity_pointer = &(altimeter-> velocity_calculations[0]);
     altimeter -> lagging_pointer  = &(altimeter-> altitude_readings[0]);
 
+    altimeter -> initial_altitude = altimeter -> bmp180.altitude;
+    altimeter -> height = 0;
+    altimeter -> max_height = 0;
+    altimeter -> max_velocity = 0;
 }
 
 
@@ -73,7 +77,11 @@ void update_smooth_altitude(struct Altimeter * altimeter){
     
     //"The address of the new node is now equal to the address being pointed to"
     altimeter -> altitude_pointer = altimeter -> altitude_pointer -> next_address;
+
     altimeter -> smooth_altitude = sum/LINKED_LIST_SIZE;
+    altimeter -> height = altimeter -> smooth_altitude - altimeter -> initial_altitude;
+    altimeter -> max_height = (altimeter -> height)    *(altimeter -> height > altimeter -> max_height) +
+                              (altimeter -> max_height)*(altimeter -> height < altimeter -> max_height);
 }
 
 /*
@@ -105,6 +113,8 @@ void update_smooth_velocity(struct Altimeter * altimeter){
 
     altimeter -> velocity_pointer = altimeter -> velocity_pointer -> next_address;
     altimeter -> smooth_velocity = sum/LINKED_LIST_SIZE;
+    altimeter -> max_velocity = (altimeter -> smooth_velocity) * (altimeter -> smooth_velocity > altimeter -> max_velocity) + 
+                                (altimeter -> max_velocity)    * (altimeter -> smooth_velocity < altimeter -> max_velocity);
 }
 
 
