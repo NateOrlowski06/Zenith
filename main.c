@@ -3,21 +3,16 @@
 #include "hardware/i2c.h"
 
 #include "altimeter.h"
-
-
+#include "state_handler.h"
+//#define SERIAL
 
 int main()
 {
     //usb configuration for serial data
-    stdio_init_all();
+    #ifdef SERIAL
+        stdio_init_all();
+    #endif
 
-
-    //Waits for user input to start program, for development and testing only
-    /*
-    while(getchar() != 'X'){
-        sleep_ms(10);
-    }
-    */
 
     struct Altimeter altimeter;
     initialize_altimeter(&altimeter);
@@ -25,21 +20,26 @@ int main()
     absolute_time_t start;
     absolute_time_t end;
 
-    int trigger = 0;
+    uint8_t state = 1;
+    //constant pointer to mutable integer
+    uint8_t * const state_pointer = &state;
+
     while(1){
         start = get_absolute_time();
         update_altimeter(&altimeter);
+
+        handle_state(state_pointer,&altimeter);        
         end = get_absolute_time();
-        printf("Altitude: %f    Height: %f   Velocity: %f     Trigger: %d    Execution time: %lld   %f %f\n",altimeter.smooth_altitude,
+        
+        #ifdef SERIAL
+        printf("Altitude: %f    Height: %f   Velocity: %f     State: %d    Execution time: %lld   %f %f\n",altimeter.smooth_altitude,
                                                                                                      altimeter.height,
                                                                                                      altimeter.smooth_velocity,
-                                                                                                     trigger,
+                                                                                                     state,
                                                                                                      absolute_time_diff_us(start,end),
                                                                                                      altimeter.max_height,
                                                                                                      altimeter.max_velocity);
-        
-        
-        trigger |= altimeter.smooth_velocity>5 && altimeter.height >5;
+        #endif
     }
 
 
