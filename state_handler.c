@@ -46,12 +46,10 @@ void handle_freefall(uint8_t *state, struct Altimeter* altimeter){
                                  altimeter -> is_armed);
 
 
-   // int main_deployment_condition = (absolute_time_diff_us(freefall_start_time, get_absolute_time()) > (PULSE_DURATION + 1) * US_TO_SEC) && 
-     //                         (altimeter -> smooth_altitude < MAIN_DEPLOYMENT_HEIGHT) && 
-       //                       (altimeter -> is_armed);
-    int main_deployment_condition =  
-                              (altimeter -> height < MAIN_DEPLOYMENT_HEIGHT) && 
-                              (altimeter -> is_armed);
+    int main_deployment_condition =   (absolute_time_diff_us(freefall_start_time, get_absolute_time()) > (PULSE_DURATION + 1) * US_TO_SEC) && 
+                                      (altimeter -> height < MAIN_DEPLOYMENT_HEIGHT) && 
+                                      (altimeter -> is_armed);
+    
  
     gpio_put(MAIN_CHARGE_PIN, main_deployment_condition);
 
