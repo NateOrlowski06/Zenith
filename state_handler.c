@@ -34,7 +34,7 @@ void handle_coast(uint8_t *state, struct Altimeter* altimeter){
 void handle_freefall(uint8_t *state, struct Altimeter* altimeter){
     //Log data
 
-    *state = *state << ((altimeter -> height < LANDED_HEIGHT_THRESHOLD) || ((altimeter -> smooth_velocity) < LANDED_VELOCITY_THRESHOLD));
+    *state = *state << ((altimeter -> height < LANDED_HEIGHT_THRESHOLD) && ((altimeter -> smooth_velocity) > LANDED_VELOCITY_THRESHOLD));
 }
 
 void handle_landed(uint8_t *state, struct Altimeter* altimeter){
