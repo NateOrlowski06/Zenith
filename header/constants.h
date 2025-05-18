@@ -12,6 +12,7 @@
 #define DISARM 0
 
 //State change logic constants
+//TODO: refine these values
 #define TAKEOFF_HEIGHT_THRESHOLD 10.0
 #define TAKEOFF_VELO_THRESHOLD 5.0
 #define MOTOR_BURNOUT_PERCENT 0.4
@@ -38,5 +39,7 @@
 
 #define US_TO_SEC 100000
 
+//Comment this line for single deploy at apogee
+#define DUAL_DEPLOY
 
 #endif

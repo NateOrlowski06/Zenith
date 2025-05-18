@@ -1,5 +1,14 @@
 #include "header/bmp180.h"
 
+/*
+    This library was written as a header only file found on github
+    https://github.com/luigifcruz/pico-stuff/blob/main/lib/bmp180/bmp180.h
+    I have refactored it into a source and header file, and I have also commented it
+*/
+
+
+
+// Delay time in micro seconds for each OSS setting, values from datasheet
 const uint16_t oss_delay[] = {4500, 7500, 13500, 25500};
 
 bool bmp_check_chip_id(bmp_t* bmp) {
@@ -59,6 +68,14 @@ bool bmp_get_calib_coeffs(bmp_t* bmp) {
     return true;
 }
 
+/*
+
+     sends signal to bmp180 to give us temperature value
+     Called by bmp_get_temperature, it returns a value in 
+     in microseconds which is passed to sleep_us() to wait for signal from bmp180
+
+*/
+
 uint16_t bmp_start_temperature(bmp_t* bmp) {
     uint8_t temp_reg[] = {
         BMP_REG_CONTROL,
@@ -80,6 +97,7 @@ bool bmp_read_temperature(bmp_t* bmp) {
         return false;
     }
 
+    // Formula from BOSCH data sheet
     int16_t UT = (temp_val[0] << 8) + temp_val[1];
 
     if (UT == (int16_t)0x8000) {
@@ -115,6 +133,7 @@ uint16_t bmp_start_pressure(bmp_t* bmp) {
     return oss_delay[bmp->oss];
 }
 
+// This is all one big formula based on BOSCH data sheet
 bool bmp_read_pressure(bmp_t* bmp) {
     uint8_t pres_reg = BMP_REG_RESULT;
     uint8_t pres_val[3];
@@ -156,6 +175,7 @@ bool bmp_read_pressure(bmp_t* bmp) {
     return true;
 }
 
+// Called by user, this function goes and sends signal to BMP180 then sleeps
 bool bmp_get_temperature(bmp_t* bmp) {
     sleep_us(bmp_start_temperature(bmp));
     return bmp_read_temperature(bmp);

@@ -4,15 +4,17 @@
 #include "header/bmp180.h"
 #include "constants.h"
 /*
-RMS variance is a funciton of OSS, with OSS zero, RMS is 0.5 m
+Root mean square (RMS) variance is a funciton of the Over Sampling Setting (OSS) on the BMP180.
+With OSS zero, RMS is 0.5 m
 Therefore, the moving average variance is plus or minus RMS/list_size
-V = RMS/list_size = 0.1 m
+Variance = RMS/list_size = 0.1 m
 
 dH is the height change during time interval for a full refresh of values
-At OSS 0, sensor takes 5 ms per pressure and 5ms per temp, so 10 total
+At OSS 0, sensor takes 4.5 ms per pressure and 4.5ms per temp, so 9 total
 dH = OSS_Delay * speed(m/s) * list_size
 
 small dH correlates to larger variance, vice versa
+dH can be used to ensure the altimeter is responsive enough for the given task
 */
 
 
@@ -45,7 +47,6 @@ struct Altimeter{
 };
 
 
-void update_altimeter(struct Altimeter * altimeter);
 
 void update_smooth_altitude(struct Altimeter * altimeter);
 void update_smooth_velocity(struct Altimeter * altimeter);

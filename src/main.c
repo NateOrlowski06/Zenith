@@ -6,6 +6,17 @@
 #include "header/state_handler.h"
 //#define SERIAL
 
+/*
+
+    Kind of a mess right now
+    in general, it just repeatedly calls the functions to update the altimeter values
+    and the funcions to handle the states
+
+    Everything else is for debugging, timing, and serial output
+
+*/
+
+
 int main()
 {
     //usb configuration for serial data
@@ -17,6 +28,7 @@ int main()
     struct Altimeter altimeter;
     initialize_altimeter(&altimeter);
 
+    //Used for timing runtime
     absolute_time_t start;
     absolute_time_t end;
 

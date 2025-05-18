@@ -8,6 +8,7 @@
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
 
+//Registers and coefficients
 #define BMP_REG_CONTROL         0xF4
 #define BMP_REG_RESULT          0xF6
 #define BMP_COM_TEMP            0x2E
@@ -21,7 +22,7 @@
 #define BMP_TEMP_DELAY          4500
 
 #define ASSERT_OK(X) { if (X == false) return false; };
-
+//Calibration coefficients
 typedef struct {
     int16_t  AC1;
     int16_t  AC2;
