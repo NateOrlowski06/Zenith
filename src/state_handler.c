@@ -1,4 +1,4 @@
-#include "state_handler.h"
+#include "header/state_handler.h"
 #include <time.h>
 void (*state_handlers[5])(uint8_t *state, struct Altimeter* altimeter) = {handle_standby,
                                                                        handle_boost,

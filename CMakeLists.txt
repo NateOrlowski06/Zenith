@@ -35,30 +35,22 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(FlightComputerV2 main.c altimeter.c Libs/bmp180.c state_handler.c)
+add_executable(FlightComputerV2 src/main.c src/altimeter.c src/bmp180.c src/state_handler.c)
 
 pico_set_program_name(FlightComputerV2 "FlightComputerV2")
 pico_set_program_version(FlightComputerV2 "0.1")
 
-# Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(FlightComputerV2 0)
 pico_enable_stdio_usb(FlightComputerV2 1)
 
 # Add the standard library to the build
-target_link_libraries(FlightComputerV2
-        pico_stdlib)
+target_link_libraries(FlightComputerV2 pico_stdlib hardware_i2c)
 
 # Add the standard include files to the build
 target_include_directories(FlightComputerV2 PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
-        ${CMAKE_CURRENT_LIST_DIR}/Libs
-)
+        ${CMAKE_CURRENT_LIST_DIR}/header
+        ${CMAIE_CURRENT_LIST_DUR}/src)
 
-# Add any user requested libraries
-target_link_libraries(FlightComputerV2 
-        hardware_i2c
-        
-        )
 
 pico_add_extra_outputs(FlightComputerV2)
 

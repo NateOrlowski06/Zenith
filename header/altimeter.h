@@ -1,7 +1,7 @@
 #ifndef ALTIMETER_H
 #define ALTIMETER_H
 
-#include "Libs/bmp180.h"
+#include "header/bmp180.h"
 #include "constants.h"
 /*
 RMS variance is a funciton of OSS, with OSS zero, RMS is 0.5 m

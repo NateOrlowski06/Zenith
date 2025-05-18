@@ -2,8 +2,8 @@
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
 
-#include "altimeter.h"
-#include "state_handler.h"
+#include "header/altimeter.h"
+#include "header/state_handler.h"
 //#define SERIAL
 
 int main()
