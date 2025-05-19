@@ -54,4 +54,18 @@ void update_smooth_velocity(struct Altimeter * altimeter);
 
 void initialize_altimeter(struct Altimeter * altimeter);
 
+/*
+
+    This function is called by main.c ever loop iteration and passed a pointer to altimeter struct
+    It first gets most recent reading from BMP180, takes 9 ms
+    Then it adds this value to the list in update_smooth_altitude
+    Then adds new velocity value to the list
+
+*/
+inline void update_altimeter(struct Altimeter * altimeter){
+    bmp_get_pressure_temperature(&(altimeter -> bmp180));
+    // Order matters, altitude must be calculated before velocity for lagging pointer logic
+    update_smooth_altitude(altimeter);
+    update_smooth_velocity(altimeter);
+}
 #endif
