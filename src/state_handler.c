@@ -118,7 +118,7 @@ void handle_freefall(uint8_t *state, struct Altimeter* altimeter){
     static absolute_time_t freefall_start_time = 0;
     static absolute_time_t main_deployment_time = 0;
     //only ever evaluated to get_absolute_time when freefall_start is zero, otherwise, it is never changed again
-    freefall_start_time = (freefall_start_time == 0) * get_absolute_time();
+    freefall_start_time = (freefall_start_time == 0) * get_absolute_time() + (freefall_start_time != 0) * freefall_start_time;
 
     //GPIO is set to on if it has been less than 2 seconds from freefall detection and altimeter is armed
     gpio_put(DROGUE_CHARGE_PIN, (absolute_time_diff_us(freefall_start_time, get_absolute_time()) < PULSE_DURATION * US_TO_SEC) && 
