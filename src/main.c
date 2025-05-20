@@ -4,7 +4,7 @@
 
 #include "header/altimeter.h"
 #include "header/state_handler.h"
-//#define SERIAL
+#define SERIAL
 
 /*
 

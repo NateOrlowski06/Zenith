@@ -29,8 +29,8 @@
 #define I2C_SDA 0
 #define I2C_SCL 1
 
-#define DROGUE_CHARGE_PIN 16
-#define MAIN_CHARGE_PIN 17
+#define DROGUE_CHARGE_PIN 20
+#define MAIN_CHARGE_PIN 21
 #define PULSE_DURATION 2
 
 #define SAFE_ARMING_HEIGHT 50.0
