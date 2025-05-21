@@ -132,11 +132,9 @@ void handle_freefall(uint8_t *state, struct Altimeter* altimeter){
 
 
     #ifdef DUAL_DEPLOY
-    if(main_deployment_time == 0 && (altimeter -> smooth_altitude < MAIN_DEPLOYMENT_HEIGHT)){
-        main_deployment_time = get_absolute_time();
-    }
+    
     //same logic as freefall start time
-    main_deployment_time += get_absolute_time()* ((main_deployment_time == 0) && (altimeter -> smooth_altitude < MAIN_DEPLOYMENT_HEIGHT));
+    main_deployment_time += get_absolute_time()* ((main_deployment_time == 0) && (altimeter -> height < MAIN_DEPLOYMENT_HEIGHT));
 
     int main_deployment_condition =   (absolute_time_diff_us(main_deployment_time, get_absolute_time()) < PULSE_DURATION * US_TO_SEC) && 
                                       (altimeter -> height < MAIN_DEPLOYMENT_HEIGHT) && 
