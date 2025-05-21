@@ -88,7 +88,10 @@ void handle_boost(uint8_t *state, struct Altimeter* altimeter){
 */
 void handle_coast(uint8_t *state, struct Altimeter* altimeter){
     // Moves the state back to standby if the altitude is less than expected by coasting state
-    *state = *state >> 2*((altimeter -> smooth_altitude) < SAFE_ARMING_HEIGHT);
+    if(altimeter -> smooth_altitude < SAFE_ARMING_HEIGHT){
+        *state = *state >> 2;
+        return;
+    }
     altimeter -> is_armed = ARM;
 
     *state = *state << ((altimeter -> max_height > altimeter -> height) && (altimeter -> smooth_velocity < FREEFALL_VELOCITY_THRESHOLD));
