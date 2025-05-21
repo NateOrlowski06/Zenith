@@ -55,8 +55,10 @@ void handle_standby(uint8_t *state, struct Altimeter* altimeter){
 
     // TODO: deadband height while rocket is still on the pad
 
-    *state = *state << (altimeter -> height > TAKEOFF_HEIGHT_THRESHOLD && 
-               altimeter -> smooth_velocity > TAKEOFF_VELO_THRESHOLD);
+
+    if((altimeter -> height > TAKEOFF_HEIGHT_THRESHOLD) && altimeter -> smooth_velocity > TAKEOFF_VELO_THRESHOLD){
+        *state = *state <<1;
+    }
 }
 
 /*
@@ -71,7 +73,9 @@ void handle_standby(uint8_t *state, struct Altimeter* altimeter){
 
 */
 void handle_boost(uint8_t *state, struct Altimeter* altimeter){
-    *state = *state << ((altimeter -> max_velocity * MOTOR_BURNOUT_PERCENT) > (altimeter -> smooth_velocity));
+    if((altimeter -> max_velocity * MOTOR_BURNOUT_PERCENT) > (altimeter -> smooth_velocity)){
+        *state = *state <<1;
+    }
 }
 
 /*
@@ -94,7 +98,9 @@ void handle_coast(uint8_t *state, struct Altimeter* altimeter){
     }
     altimeter -> is_armed = ARM;
 
-    *state = *state << ((altimeter -> max_height > altimeter -> height) && (altimeter -> smooth_velocity < FREEFALL_VELOCITY_THRESHOLD));
+    if((altimeter -> max_height > altimeter -> height) && (altimeter -> smooth_velocity < FREEFALL_VELOCITY_THRESHOLD)){
+        *state = *state <<1;
+    }
 }
 
 /*
@@ -123,30 +129,47 @@ void handle_freefall(uint8_t *state, struct Altimeter* altimeter){
 
 
     //This value is only ever added to the instance freefall_start_time = 0, otherwise, zero is added to it
-    freefall_start_time += (freefall_start_time == 0) * get_absolute_time();
+    if(freefall_start_time == 0){
+        freefall_start_time = get_absolute_time();
+    }
 
 
     //GPIO is set to on if it has been less than 2 seconds from freefall detection and altimeter is armed
-    gpio_put(DROGUE_CHARGE_PIN, (absolute_time_diff_us(freefall_start_time, get_absolute_time()) < PULSE_DURATION * US_TO_SEC) && 
-                                 altimeter -> is_armed);
+    if((absolute_time_diff_us(freefall_start_time, get_absolute_time()) < PULSE_DURATION * US_TO_SEC) && (altimeter -> is_armed)){
+        gpio_put(DROGUE_CHARGE_PIN,1);
+    }
+
+    else{
+        gpio_put(DROGUE_CHARGE_PIN,0);
+    }
+    
 
 
     #ifdef DUAL_DEPLOY
-    if(main_deployment_time == 0 && (altimeter -> smooth_altitude < MAIN_DEPLOYMENT_HEIGHT)){
+
+    if(main_deployment_time == 0 && altimeter -> height < MAIN_DEPLOYMENT_HEIGHT){
         main_deployment_time = get_absolute_time();
     }
-    //same logic as freefall start time
-    main_deployment_time += get_absolute_time()* ((main_deployment_time == 0) && (altimeter -> smooth_altitude < MAIN_DEPLOYMENT_HEIGHT));
+
+
 
     int main_deployment_condition =   (absolute_time_diff_us(main_deployment_time, get_absolute_time()) < PULSE_DURATION * US_TO_SEC) && 
                                       (altimeter -> height < MAIN_DEPLOYMENT_HEIGHT) && 
                                       (altimeter -> is_armed);
     
 
-    gpio_put(MAIN_CHARGE_PIN, main_deployment_condition);
+
+    if(main_deployment_condition){
+        gpio_put(MAIN_CHARGE_PIN, 1);
+    }
+    else{
+        gpio_put(MAIN_CHARGE_PIN,0);
+    }
     #endif
 
-    *state = *state << ((altimeter -> height < LANDED_HEIGHT_THRESHOLD) && ((altimeter -> smooth_velocity) > LANDED_VELOCITY_THRESHOLD));
+    if((altimeter -> height < LANDED_HEIGHT_THRESHOLD) && ((altimeter -> smooth_velocity) > LANDED_VELOCITY_THRESHOLD)){
+        *state = *state <<1;
+    }
 }
 
 /*
