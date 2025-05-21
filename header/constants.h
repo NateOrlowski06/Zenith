@@ -42,4 +42,11 @@
 //Comment this line for single deploy at apogee
 #define DUAL_DEPLOY
 
+// Pins for sd card reader
+#define RX 16
+#define TX 19
+#define CSN 17
+#define SCK 18
+#define SPI_PORT SPI0
+
 #endif

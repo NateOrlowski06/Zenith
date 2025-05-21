@@ -34,8 +34,9 @@ project(FlightComputerV2 C CXX ASM)
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
+add_subdirectory(sd-card-lib/no-OS-FatFS-SD-SDIO-SPI-RPi-Pico/src build)
 
-add_executable(FlightComputerV2 src/main.c src/altimeter.c src/bmp180.c src/state_handler.c)
+add_executable(FlightComputerV2 src/main.c src/altimeter.c src/bmp180.c src/state_handler.c src/hw_config.c src/data_logger.c) 
 
 pico_set_program_name(FlightComputerV2 "FlightComputerV2")
 pico_set_program_version(FlightComputerV2 "0.1")
@@ -43,13 +44,12 @@ pico_set_program_version(FlightComputerV2 "0.1")
 pico_enable_stdio_usb(FlightComputerV2 1)
 
 # Add the standard library to the build
-target_link_libraries(FlightComputerV2 pico_stdlib hardware_i2c)
+target_link_libraries(FlightComputerV2 pico_stdlib hardware_i2c no-OS-FatFS-SD-SDIO-SPI-RPi-Pico)
 
 # Add the standard include files to the build
 target_include_directories(FlightComputerV2 PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
-        ${CMAKE_CURRENT_LIST_DIR}/header
-        ${CMAIE_CURRENT_LIST_DUR}/src)
+        )
 
 
 pico_add_extra_outputs(FlightComputerV2)

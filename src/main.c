@@ -4,6 +4,8 @@
 
 #include "header/altimeter.h"
 #include "header/state_handler.h"
+
+#include "header/data_logger.h"
 #define SERIAL
 
 /*
@@ -35,6 +37,12 @@ int main()
     uint8_t state = 1;
     //constant pointer to mutable integer
     uint8_t * const state_pointer = &state;
+
+    initialize_data_logger("Helloworld.csv");
+    log_data("Helloworld",10);
+
+    end_logging();
+
 
     while(1){
         #ifdef SERIAL
