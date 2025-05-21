@@ -37,7 +37,7 @@
 
 #define MAIN_DEPLOYMENT_HEIGHT 200.0
 
-#define US_TO_SEC 1000000
+#define US_TO_SEC 1000000.0
 
 //Comment this line for single deploy at apogee
 #define DUAL_DEPLOY
