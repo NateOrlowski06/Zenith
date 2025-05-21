@@ -156,7 +156,6 @@ void update_smooth_velocity(struct Altimeter * altimeter){
     altimeter -> velocity_pointer = altimeter -> velocity_pointer -> next_address;
     altimeter -> smooth_velocity = sum/LINKED_LIST_SIZE;
     
-    // See state_handler.c for an explanation of branchless programming
     if(altimeter -> max_velocity > altimeter -> smooth_velocity){
         altimeter -> max_velocity = altimeter -> smooth_velocity;
     }

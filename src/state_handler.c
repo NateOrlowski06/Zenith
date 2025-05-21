@@ -57,7 +57,7 @@ void handle_standby(uint8_t *state, struct Altimeter* altimeter){
 
 
     if((altimeter -> height > TAKEOFF_HEIGHT_THRESHOLD) && altimeter -> smooth_velocity > TAKEOFF_VELO_THRESHOLD){
-        *state = *state <<1;
+        *state = *state << 1;
     }
 }
 
@@ -74,7 +74,7 @@ void handle_standby(uint8_t *state, struct Altimeter* altimeter){
 */
 void handle_boost(uint8_t *state, struct Altimeter* altimeter){
     if((altimeter -> max_velocity * MOTOR_BURNOUT_PERCENT) > (altimeter -> smooth_velocity)){
-        *state = *state <<1;
+        *state = *state <<  1;
     }
 }
 
@@ -99,7 +99,7 @@ void handle_coast(uint8_t *state, struct Altimeter* altimeter){
     altimeter -> is_armed = ARM;
 
     if((altimeter -> max_height > altimeter -> height) && (altimeter -> smooth_velocity < FREEFALL_VELOCITY_THRESHOLD)){
-        *state = *state <<1;
+        *state = *state << 1;
     }
 }
 
@@ -124,18 +124,18 @@ void handle_coast(uint8_t *state, struct Altimeter* altimeter){
 */
 void handle_freefall(uint8_t *state, struct Altimeter* altimeter){
     //Freefall_start initializied to zero statically, updated on first funciton call
-    static absolute_time_t freefall_start_time = 0;
+    static absolute_time_t drogue_deployment_time = 0;
     static absolute_time_t main_deployment_time = 0;
 
 
-    //This value is only ever added to the instance freefall_start_time = 0, otherwise, zero is added to it
-    if(freefall_start_time == 0){
-        freefall_start_time = get_absolute_time();
+    // This value is only ever set the instance freefall_start_time = 0
+    if(drogue_deployment_time == 0){
+        drogue_deployment_time = get_absolute_time();
     }
 
 
-    //GPIO is set to on if it has been less than 2 seconds from freefall detection and altimeter is armed
-    if((absolute_time_diff_us(freefall_start_time, get_absolute_time()) < PULSE_DURATION * US_TO_SEC) && (altimeter -> is_armed)){
+    // GPIO is set to on if it has been less than 2 seconds from freefall detection and altimeter is armed
+    if((absolute_time_diff_us(drogue_deployment_time, get_absolute_time()) < PULSE_DURATION * US_TO_SEC) && (altimeter -> is_armed)){
         gpio_put(DROGUE_CHARGE_PIN,1);
     }
 
@@ -147,7 +147,8 @@ void handle_freefall(uint8_t *state, struct Altimeter* altimeter){
 
     #ifdef DUAL_DEPLOY
 
-    if(main_deployment_time == 0 && altimeter -> height < MAIN_DEPLOYMENT_HEIGHT){
+    // sets the start time for main deployment pulse
+    if((main_deployment_time == 0) && (altimeter -> height < MAIN_DEPLOYMENT_HEIGHT)){
         main_deployment_time = get_absolute_time();
     }
 
@@ -157,18 +158,17 @@ void handle_freefall(uint8_t *state, struct Altimeter* altimeter){
                                       (altimeter -> height < MAIN_DEPLOYMENT_HEIGHT) && 
                                       (altimeter -> is_armed);
     
-
-
     if(main_deployment_condition){
         gpio_put(MAIN_CHARGE_PIN, 1);
     }
+
     else{
         gpio_put(MAIN_CHARGE_PIN,0);
     }
     #endif
 
     if((altimeter -> height < LANDED_HEIGHT_THRESHOLD) && ((altimeter -> smooth_velocity) > LANDED_VELOCITY_THRESHOLD)){
-        *state = *state <<1;
+        *state = *state << 1;
     }
 }
 
