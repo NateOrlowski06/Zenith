@@ -120,8 +120,11 @@ void handle_freefall(uint8_t *state, struct Altimeter* altimeter){
     //Freefall_start initializied to zero statically, updated on first funciton call
     static absolute_time_t freefall_start_time = 0;
     static absolute_time_t main_deployment_time = 0;
-    //only ever evaluated to get_absolute_time when freefall_start is zero, otherwise, it is never changed again
-    freefall_start_time = (freefall_start_time == 0) * get_absolute_time() + (freefall_start_time != 0) * freefall_start_time;
+
+
+    //This value is only ever added to the instance freefall_start_time = 0, otherwise, zero is added to it
+    freefall_start_time += (freefall_start_time == 0) * get_absolute_time();
+
 
     //GPIO is set to on if it has been less than 2 seconds from freefall detection and altimeter is armed
     gpio_put(DROGUE_CHARGE_PIN, (absolute_time_diff_us(freefall_start_time, get_absolute_time()) < PULSE_DURATION * US_TO_SEC) && 
@@ -129,12 +132,16 @@ void handle_freefall(uint8_t *state, struct Altimeter* altimeter){
 
 
     #ifdef DUAL_DEPLOY
-    int main_deployment_condition =   (absolute_time_diff_us(freefall_start_time, get_absolute_time()) > (PULSE_DURATION + 1) * US_TO_SEC) && 
+    if(main_deployment_time == 0 && (altimeter -> smooth_altitude < MAIN_DEPLOYMENT_HEIGHT)){
+        main_deployment_time = get_absolute_time();
+    }
+    //same logic as freefall start time
+    main_deployment_time += get_absolute_time()* ((main_deployment_time == 0) && (altimeter -> smooth_altitude < MAIN_DEPLOYMENT_HEIGHT));
+
+    int main_deployment_condition =   (absolute_time_diff_us(main_deployment_time, get_absolute_time()) < PULSE_DURATION * US_TO_SEC) && 
                                       (altimeter -> height < MAIN_DEPLOYMENT_HEIGHT) && 
                                       (altimeter -> is_armed);
     
-    // TODO: find clean way to pulse the main charge
-    // maybe do same as drogue but main_start_time = (500>height>450)*time
 
     gpio_put(MAIN_CHARGE_PIN, main_deployment_condition);
     #endif
