@@ -91,9 +91,9 @@ void update_smooth_altitude(struct Altimeter * altimeter){
     altimeter -> smooth_altitude = sum/LINKED_LIST_SIZE;
     altimeter -> height = (altimeter -> smooth_altitude) - (altimeter -> initial_altitude);
 
-    // Branchless statement
-    altimeter -> max_height = (altimeter -> height)    *(altimeter -> height > altimeter -> max_height) +
-                              (altimeter -> max_height)*(altimeter -> height <= altimeter -> max_height);
+    if(altimeter -> height > altimeter -> max_height){
+        altimeter -> max_height = altimeter -> height;
+    }
 }
 
 /*
@@ -129,10 +129,11 @@ void update_smooth_velocity(struct Altimeter * altimeter){
 
     altimeter -> velocity_pointer = altimeter -> velocity_pointer -> next_address;
     altimeter -> smooth_velocity = sum/LINKED_LIST_SIZE;
+    
+    if(altimeter -> max_velocity > altimeter -> smooth_velocity){
+        altimeter -> max_velocity = altimeter -> smooth_velocity;
+    }
 
-    // Branchless statement    
-    altimeter -> max_velocity = (altimeter -> smooth_velocity) * (altimeter -> smooth_velocity > altimeter -> max_velocity) + 
-                                (altimeter -> max_velocity)    * (altimeter -> smooth_velocity <= altimeter -> max_velocity);
 }
 
 
