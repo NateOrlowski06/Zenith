@@ -1,20 +1,10 @@
 #include "header/altimeter.h"
-
+#include "header/constants.h"
 /*
 
     This function is called by main.c once and passed a pointer to altimeter struct
 
-    List of things done in this funciton:
-        -Initializes I2C settings
-        -Initializes communicaiton with the BMP180 over I2C
-        -Gets initial reading from BMP180
-        -Creates circular linked list for altitude,
-        -Initializes all altitude values to current altitude and velocity values to 0
-        -Points every node to the next in the circle
-        -Initializes lagging pointer for velocity calculations
-        -Initializes variables to keep track of flight statistics
-        -Initializes GPIO output and armed status;
-
+    Initializes basically everything; I2C, BMP180, lists, pointers, variables, and GPIO
 */
 void initialize_altimeter(struct Altimeter * altimeter){
     // oss [0-3], 0 is fastest but least accurate, 3 is opposite
@@ -74,15 +64,8 @@ void initialize_altimeter(struct Altimeter * altimeter){
 
     Called by update_altimeter and passed a pointer to altimeter struct
     The altitude readings are noisy so a moving average is employed here
-    This funciton utilizes a circular linked list. 
     The circular linked list makes the logic easy for traversing the array and overriting old values.
 
-    1. The most recent altitude reading is loaded into altitude_pointer
-    2. altitude_pointer is given a timestamp for velocity calcualtions later
-    3. Initializes temporary variables for traversing the list
-    4. Sum all values in list until we get back to start and divide by list size for 
-    
-    5. Update struct members with new values
 */
 void update_smooth_altitude(struct Altimeter * altimeter){
 
@@ -106,9 +89,9 @@ void update_smooth_altitude(struct Altimeter * altimeter){
     altimeter -> altitude_pointer = altimeter -> altitude_pointer -> next_address;
 
     altimeter -> smooth_altitude = sum/LINKED_LIST_SIZE;
-    altimeter -> height = altimeter -> smooth_altitude - altimeter -> initial_altitude;
+    altimeter -> height = (altimeter -> smooth_altitude) - (altimeter -> initial_altitude);
 
-    // See state_handler.c for explanation of branchless programming
+    // Branchless statement
     altimeter -> max_height = (altimeter -> height)    *(altimeter -> height > altimeter -> max_height) +
                               (altimeter -> max_height)*(altimeter -> height <= altimeter -> max_height);
 }
@@ -116,9 +99,6 @@ void update_smooth_altitude(struct Altimeter * altimeter){
 /*
     
     Called by update_altimeter and passed a pointer to altimeter struct
-
-    To keep calculate velocity, it requires we differentiate from altitude which is noisy. 
-    Therefore, a moving average is employed. 
 
     General overview: The average velocity is taken between the oldest and newest members of altitude_readings
     that value is then put into its own circular linked list so that we can have a velocity moving average
@@ -128,24 +108,18 @@ void update_smooth_altitude(struct Altimeter * altimeter){
     to the oldest altitude so that it can be updated upon the next iteration. Therefore, by keeping a lagging pointer
     one step behind the altitude pointer, we have access to the newest and oldest altitude values without using a doubly linked list
 
-    1. Time and height difference are established between the two altitude values
-    2. lagging pointer catches back up to the altitude pointer because its work has been done this iteration
-    3. Add newest velocity reading to velocity_calculations (dh/dt)
-    4. Take moving average of velocity list the same as in update_smooth_altitude
-    5. Move the velocity pointer to the next node in the list
-    6. Update struct members
-
 */
 void update_smooth_velocity(struct Altimeter * altimeter){
 
-    double dt = absolute_time_diff_us(altimeter -> lagging_pointer -> time, altimeter -> altitude_pointer -> time)*0.000001;
+    double dt = absolute_time_diff_us(altimeter -> lagging_pointer -> time, altimeter -> altitude_pointer -> time) / US_TO_SEC;
     float height_difference =  (altimeter -> altitude_pointer -> value) - (altimeter -> lagging_pointer -> value);
     
-    //Lagging pointer catches back up to altitude pointer, but will lag behind in update_smooth_altitude
+    // Lagging pointer catches back up to altitude pointer, but will lag behind in update_smooth_altitude
     altimeter -> lagging_pointer = altimeter -> altitude_pointer;
     altimeter -> velocity_pointer -> value = height_difference / (LINKED_LIST_SIZE * dt);
 
     float sum = 0;
+    // Temporary variable for traversing array
     struct Velocity_Node * loop_pointer = altimeter -> velocity_pointer;
     
     do{
@@ -155,8 +129,8 @@ void update_smooth_velocity(struct Altimeter * altimeter){
 
     altimeter -> velocity_pointer = altimeter -> velocity_pointer -> next_address;
     altimeter -> smooth_velocity = sum/LINKED_LIST_SIZE;
-    
-    // See state_handler.c for an explanation of branchless programming
+
+    // Branchless statement    
     altimeter -> max_velocity = (altimeter -> smooth_velocity) * (altimeter -> smooth_velocity > altimeter -> max_velocity) + 
                                 (altimeter -> max_velocity)    * (altimeter -> smooth_velocity <= altimeter -> max_velocity);
 }

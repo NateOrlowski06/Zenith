@@ -69,6 +69,8 @@ void handle_standby(uint8_t *state, struct Altimeter* altimeter){
 
 */
 void handle_boost(uint8_t *state, struct Altimeter* altimeter){
+
+    // Branchless statement
     *state = *state << ((altimeter -> max_velocity * MOTOR_BURNOUT_PERCENT) > (altimeter -> smooth_velocity));
 }
 
@@ -88,6 +90,7 @@ void handle_coast(uint8_t *state, struct Altimeter* altimeter){
     }
     altimeter -> is_armed = ARM;
 
+    // Branchless statement
     *state = *state << ((altimeter -> max_height > altimeter -> height) && (altimeter -> smooth_velocity < FREEFALL_VELOCITY_THRESHOLD));
 }
 
@@ -102,12 +105,12 @@ void handle_coast(uint8_t *state, struct Altimeter* altimeter){
 
 */
 void handle_freefall(uint8_t *state, struct Altimeter* altimeter){
-    //Freefall_start initializied to zero statically, updated on first funciton call
+    // Freefall_start initializied to zero statically, updated on first funciton call
     static absolute_time_t freefall_start_time = 0;
     static absolute_time_t main_deployment_time = 0;
 
 
-    // This value is only ever added to the instance freefall_start_time = 0, otherwise, zero is added to it
+    // This value is only ever added to the instance freefall_start_time = 0, otherwise, zero is added to it. Branchless
     freefall_start_time += (freefall_start_time == 0) * get_absolute_time();
 
 
@@ -118,7 +121,7 @@ void handle_freefall(uint8_t *state, struct Altimeter* altimeter){
 
     #ifdef DUAL_DEPLOY
     
-    // Same logic as freefall start time
+    // Branchless
     main_deployment_time += get_absolute_time()* ((main_deployment_time == 0) && (altimeter -> height < MAIN_DEPLOYMENT_HEIGHT));
 
     int main_deployment_condition =   (absolute_time_diff_us(main_deployment_time, get_absolute_time()) < PULSE_DURATION * US_TO_SEC) && 
@@ -128,6 +131,7 @@ void handle_freefall(uint8_t *state, struct Altimeter* altimeter){
     gpio_put(MAIN_CHARGE_PIN, main_deployment_condition);
     #endif
 
+    // Branchless statement
     *state = *state << ((altimeter -> height < LANDED_HEIGHT_THRESHOLD) && ((altimeter -> smooth_velocity) > LANDED_VELOCITY_THRESHOLD));
 }
 
