@@ -9,10 +9,22 @@ void initialize_data_logger(char file_name[]){
     const char* const filename = file_name;
 
     f_open(&file,filename, FA_OPEN_APPEND | FA_WRITE);
+    f_printf(&file,"Timestamp,raw_pressure,temperature,raw_altitude,smooth_altitude,height,raw_velocity,smooth_velocity,is_armed,state\n");
 }
 
 void log_data(struct data_packet* data_packet){
-	f_printf(&file,"log\n");
+	f_printf(&file,"%lld,%lld,%f,%f,%f,%f,%f,%f,%d,%d\n",
+		data_packet -> time,
+		data_packet -> raw_pressure,
+		data_packet -> temperature,
+		data_packet -> raw_altitude,
+		data_packet -> smooth_altitude,
+		data_packet -> height,
+		data_packet -> velocity,
+		data_packet -> smooth_velocity,
+		data_packet -> is_armed,
+		data_packet -> state
+		);
 }
 
 void end_logging(){

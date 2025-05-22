@@ -40,7 +40,7 @@ int main()
     #endif
 
     // starts core1 main loop    
-    multicore_launch_core1(core1_entry);
+    //multicore_launch_core1(core1_entry);
 
     struct Altimeter altimeter;
     initialize_altimeter(&altimeter);
@@ -93,7 +93,8 @@ int main()
             altimeter.is_armed,
             state
         };
-        multicore_fifo_push_blocking(1);
+        //multicore_fifo_push_blocking(1);
+        log_data(&data_packet);
     }
 
 
