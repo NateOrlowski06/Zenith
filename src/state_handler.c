@@ -1,4 +1,5 @@
 #include "header/state_handler.h"
+#include "header/data_logger.h"
 #include <time.h>
 
 /*
@@ -163,5 +164,6 @@ void handle_landed(uint8_t *state, struct Altimeter* altimeter){
     gpio_put(DROGUE_CHARGE_PIN,0);
     gpio_put(MAIN_CHARGE_PIN,0);
     altimeter -> is_armed = DISARM;
+    end_logging();
 }
 

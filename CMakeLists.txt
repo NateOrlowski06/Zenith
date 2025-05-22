@@ -44,7 +44,11 @@ pico_set_program_version(FlightComputerV2 "0.1")
 pico_enable_stdio_usb(FlightComputerV2 1)
 
 # Add the standard library to the build
-target_link_libraries(FlightComputerV2 pico_stdlib hardware_i2c no-OS-FatFS-SD-SDIO-SPI-RPi-Pico)
+target_link_libraries(FlightComputerV2 
+                        pico_stdlib 
+                        hardware_i2c 
+                        no-OS-FatFS-SD-SDIO-SPI-RPi-Pico 
+                        pico_multicore)
 
 # Add the standard include files to the build
 target_include_directories(FlightComputerV2 PRIVATE
