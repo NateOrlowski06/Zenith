@@ -48,7 +48,8 @@ target_link_libraries(FlightComputerV2
                         pico_stdlib 
                         hardware_i2c 
                         no-OS-FatFS-SD-SDIO-SPI-RPi-Pico 
-                        pico_multicore)
+                        pico_multicore
+                        )
 
 # Add the standard include files to the build
 target_include_directories(FlightComputerV2 PRIVATE
