@@ -28,23 +28,7 @@ void log_data(struct data_packet* data_packet){
 
 }
 
-char* get_file_name(){
-	int i = 1;
-	FRESULT res;
-	FILINFO fno;
-	static char name[50];
 
-
-	while(1){
-		snprintf(name, sizeof(name),"flight%d.csv",i);
-		res = f_stat(name, &fno);
-		if(res != FR_OK){
-			break;
-		}
-		i++;
-	}
-	return name;
-}
 
 void end_logging(){
 	f_close(&file);

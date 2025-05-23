@@ -31,7 +31,6 @@ struct data_packet{
 void initialize_data_logger();
 void log_data(struct data_packet*);
 void end_logging();
-char* get_file_name();
 
 #endif
 
