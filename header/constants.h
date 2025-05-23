@@ -1,12 +1,6 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-//State bits
-#define STANDBY 1
-#define BOOST 2
-#define COAST 4
-#define FREEFALL 8
-#define LANDED 16
 
 #define ARM 1
 #define DISARM 0
@@ -22,7 +16,7 @@
 
 
 
-#define LINKED_LIST_SIZE 10
+#define LINKED_LIST_SIZE 5
 
 //BMP180
 #define I2C_PORT i2c0
@@ -35,7 +29,7 @@
 
 #define SAFE_ARMING_HEIGHT 50.0
 
-#define MAIN_DEPLOYMENT_HEIGHT 100.0
+#define MAIN_DEPLOYMENT_HEIGHT 250.0
 
 #define US_TO_SEC 1000000.0
 
@@ -48,5 +42,7 @@
 #define CSN 17
 #define SCK 18
 #define SPI_PORT SPI0
+
+#define DATA_PACKETS_QUEUE_SIZE 5
 
 #endif
