@@ -44,6 +44,7 @@ struct Altimeter{
     float height;
     float initial_altitude;
     uint8_t is_armed;
+    absolute_time_t start_of_flight;
 };
 
 

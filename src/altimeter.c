@@ -1,5 +1,5 @@
 #include "header/altimeter.h"
-#include "header/constants.h"
+
 /*
 
     This function is called by main.c once and passed a pointer to altimeter struct
@@ -56,6 +56,8 @@ void initialize_altimeter(struct Altimeter * altimeter){
     gpio_set_dir(DROGUE_CHARGE_PIN, 1);
 
     altimeter -> is_armed = 0;
+
+    altimeter -> start_of_flight = 0.0;
 }
 
 
@@ -130,7 +132,7 @@ void update_smooth_velocity(struct Altimeter * altimeter){
     altimeter -> velocity_pointer = altimeter -> velocity_pointer -> next_address;
     altimeter -> smooth_velocity = sum/LINKED_LIST_SIZE;
     
-    if(altimeter -> max_velocity > altimeter -> smooth_velocity){
+    if(altimeter -> max_velocity < altimeter -> smooth_velocity){
         altimeter -> max_velocity = altimeter -> smooth_velocity;
     }
 

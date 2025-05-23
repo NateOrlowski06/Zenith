@@ -1,7 +1,6 @@
 #ifndef BMP180_H
 #define BMP180_H
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include "pico/stdio.h"
