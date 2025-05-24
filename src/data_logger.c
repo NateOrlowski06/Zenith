@@ -20,7 +20,8 @@ void initialize_data_logger(){
 
 void make_packet(struct Altimeter * altimeter, uint8_t state){
 
-            packet.time = ((double)get_absolute_time() - (double)start_of_flight) / US_TO_SEC;
+			if(state == 1) packet.time = 0.0;
+            else packet.time = ((double)get_absolute_time() - (double)start_of_flight) / US_TO_SEC;
             packet.raw_pressure = altimeter -> bmp180.pressure;
             packet.temperature = altimeter -> bmp180.temperature;
             packet.raw_altitude = altimeter -> altitude_pointer -> value;

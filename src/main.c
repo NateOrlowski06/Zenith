@@ -8,10 +8,7 @@
 #include "header/state_handler.h"
 #include "header/data_logger.h"
 
-/*
-TODO: Start logging at beginning of flight
 
-*/
 
 uint8_t state = 1;
 uint8_t * const state_pointer = &state;
@@ -20,8 +17,13 @@ uint8_t * const state_pointer = &state;
 void core1_entry(){
     struct data_packet incoming_packet;
 
-    while(1){
+    while(state == 1){
+        if(queue_is_full(&packet_queue)){
+            queue_try_remove(&packet_queue,NULL);
+        }
+    }
 
+    while(1){
         queue_remove_blocking(&packet_queue, (void*)&incoming_packet);
         log_data(&incoming_packet);
     }
