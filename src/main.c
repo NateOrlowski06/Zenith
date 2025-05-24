@@ -1,5 +1,4 @@
 #include "pico/stdlib.h"
-#include <stdio.h>
 #include "pico/multicore.h"
 #include "hardware/i2c.h"
 #include "pico/util/queue.h"
@@ -17,15 +16,19 @@ uint8_t * const state_pointer = &state;
 void core1_entry(){
     struct data_packet incoming_packet;
 
-    while(state == 1){
-        if(queue_is_full(&packet_queue)){
-            queue_try_remove(&packet_queue,NULL);
-        }
-    }
 
     while(1){
-        queue_remove_blocking(&packet_queue, (void*)&incoming_packet);
-        log_data(&incoming_packet);
+        if(state == 1){
+            if(queue_is_full(&packet_queue)){
+                queue_try_remove(&packet_queue,NULL);
+            }
+        }
+
+        else{
+            queue_remove_blocking(&packet_queue, (void*)&incoming_packet);
+            log_data(&incoming_packet);
+        }
+        
     }
 }
 

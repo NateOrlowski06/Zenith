@@ -7,11 +7,11 @@
 
 //State change logic constants
 //TODO: refine these values
-#define TAKEOFF_HEIGHT_THRESHOLD 10.0
+#define TAKEOFF_HEIGHT_THRESHOLD 5.0
 #define TAKEOFF_VELO_THRESHOLD 5.0
 #define MOTOR_BURNOUT_PERCENT 0.95
-#define FREEFALL_VELOCITY_THRESHOLD -5.0
-#define LANDED_VELOCITY_THRESHOLD -5.0
+#define FREEFALL_VELOCITY_THRESHOLD -3.0
+#define LANDED_VELOCITY_THRESHOLD -2.5
 #define LANDED_HEIGHT_THRESHOLD 5.0
 #define APOGEE_DETECT_THRESHOLD 3.0
 
@@ -34,7 +34,7 @@
 #define US_TO_SEC 1000000.0
 
 //Comment this line for single deploy at apogee
-#define DUAL_DEPLOY
+//#define DUAL_DEPLOY
 
 // Pins for sd card reader
 #define RX 16

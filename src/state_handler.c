@@ -37,7 +37,6 @@ inline void handle_state(uint8_t *state, struct Altimeter* altimeter){
 // Standby ends when the velocity and height are simultaneously above their thresholds for launch
 void handle_standby(uint8_t *state, struct Altimeter* altimeter){
 
-    // TODO: deadband height to zero periodically while rocket is still on the pad
 
     if((altimeter -> height > TAKEOFF_HEIGHT_THRESHOLD) && altimeter -> smooth_velocity > TAKEOFF_VELO_THRESHOLD){
         *state = *state << 1;
@@ -67,7 +66,7 @@ void handle_boost(uint8_t *state, struct Altimeter* altimeter){
 */
 void handle_coast(uint8_t *state, struct Altimeter* altimeter){
     // Moves the state back to standby if the altitude is less than expected by coasting state
-    if(altimeter -> smooth_altitude < SAFE_ARMING_HEIGHT){
+    if(altimeter -> height < SAFE_ARMING_HEIGHT){
         *state = *state >> 2;
         start_of_flight = 0.0;
         return;
