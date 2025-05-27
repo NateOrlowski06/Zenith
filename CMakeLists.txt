@@ -28,7 +28,7 @@ set(PICO_BOARD pico2_w CACHE STRING "Board type")
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-project(FlightComputerV2 C CXX ASM)
+project(Zenith C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
@@ -36,15 +36,15 @@ pico_sdk_init()
 # Add executable. Default name is the project name, version 0.1
 add_subdirectory(sd-card-lib/no-OS-FatFS-SD-SDIO-SPI-RPi-Pico/src build)
 
-add_executable(FlightComputerV2 src/main.c src/altimeter.c src/bmp180.c src/state_handler.c src/hw_config.c src/data_logger.c) 
+add_executable(Zenith src/main.c src/altimeter.c src/bmp180.c src/state_handler.c src/hw_config.c src/data_logger.c) 
 
-pico_set_program_name(FlightComputerV2 "FlightComputerV2")
-pico_set_program_version(FlightComputerV2 "0.1")
+pico_set_program_name(Zenith "Zenith")
+pico_set_program_version(Zenith "0.1")
 
-pico_enable_stdio_usb(FlightComputerV2 1)
+pico_enable_stdio_usb(Zenith 1)
 
 # Add the standard library to the build
-target_link_libraries(FlightComputerV2 
+target_link_libraries(Zenith 
                         pico_stdlib 
                         hardware_i2c 
                         no-OS-FatFS-SD-SDIO-SPI-RPi-Pico 
@@ -52,10 +52,10 @@ target_link_libraries(FlightComputerV2
                         )
 
 # Add the standard include files to the build
-target_include_directories(FlightComputerV2 PRIVATE
+target_include_directories(Zenith PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
         )
 
 
-pico_add_extra_outputs(FlightComputerV2)
+pico_add_extra_outputs(Zenith)
 

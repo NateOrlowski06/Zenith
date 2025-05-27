@@ -1,4 +1,4 @@
-#! /home/nate/Programming/FlightComputerV2   
+#! /home/nate/Programming/Zenith   
 #path to your project directory
 
 rm -rf build
